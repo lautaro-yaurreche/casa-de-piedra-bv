@@ -16,87 +16,38 @@ export default function GaleriaPage() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const images = [
+    { id: 2, title: "Piscina Vista 2", src: "/images/piscina-2.webp" },
+    { id: 3, title: "Piscina", src: "/images/piscina.webp" },
     { id: 1, title: "Casa de Piedra", src: "/images/casa-de-piedra.webp" },
-    {
-      id: 6,
-      title: "Quincho y Piscina",
-      src: "/images/quincho-piscina-climatizada.webp",
-    },
-    {
-      id: 2,
-      title: "Piscina Privada Climatizada",
-      src: "/images/piscina-privada-climatizada.webp",
-    },
-    {
-      id: 3,
-      title: "Piscina Climatizada con Cerramiento",
-      src: "/images/piscina-privada-climatizada-con-cerramiento.webp",
-    },
-    {
-      id: 16,
-      title: "Dormitorio Matrimonial Alto",
-      src: "/images/dormitorio-matriomonial-alto.webp",
-    },
-    { id: 19, title: "Dormitorio", src: "/images/dormitorio.webp" },
-    { id: 12, title: "Terraza", src: "/images/terraza.webp" },
-    {
-      id: 8,
-      title: "Parrillero y Horno de Barro",
-      src: "/images/parrilero-y-horno-de-barro.webp",
-    },
+    { id: 4, title: "Piscina de Noche", src: "/images/piscina-noche.webp" },
+    { id: 5, title: "Terraza", src: "/images/terraza.webp" },
+    { id: 6, title: "Parrilla", src: "/images/parrilla.webp" },
+    { id: 7, title: "Mesa de Pool", src: "/images/pool.webp" },
+    { id: 8, title: "Mesa de Ping Pong", src: "/images/ping-pong.webp" },
     {
       id: 9,
-      title: "Parrillero Exterior con Mesa",
-      src: "/images/parrillero-exterior-con-mesa.webp",
-    },
-    { id: 14, title: "Mesa de Pool", src: "/images/mesa-de-pool.webp" },
-    {
-      id: 15,
-      title: "Mesa de Ping Pong",
-      src: "/images/mesa-de-ping-pong.webp",
-    },
-    { id: 13, title: "Cancha de Fútbol", src: "/images/cancha-de-futbol.webp" },
-
-    {
-      id: 5,
-      title: "Sillones junto a la Piscina",
-      src: "/images/sillones-piscina-climatizada.webp",
-    },
-
-    {
-      id: 11,
-      title: "Camastro bajo Enredadera",
-      src: "/images/camastro-enredadera.webp",
-    },
-    { id: 20, title: "Baño Grande", src: "/images/baño-grande.webp" },
-
-    {
-      id: 17,
-      title: "Dormitorio Matrimonial Bajo",
-      src: "/images/dormitorio-matrimonial-bajo.webp",
-    },
-
-    { id: 21, title: "Baño Chico", src: "/images/baño-chico.webp" },
-    {
-      id: 18,
-      title: "Dormitorio con Cuchetas",
-      src: "/images/dormitorio-cuchetas.webp",
-    },
-    {
-      id: 7,
-      title: "Casa de Piedra de Noche",
-      src: "/images/casa-de-piedra-noche.webp",
-    },
-    {
-      id: 4,
-      title: "Piscina de Noche",
-      src: "/images/piscina-privada-climatizada-noche.webp",
+      title: "Dormitorio Grande",
+      src: "/images/dormitorio-grande.webp",
     },
     {
       id: 10,
-      title: "Pincho y Luna de Fuego",
-      src: "/images/pincho-luna-fuego.webp",
+      title: "Dormitorio Grande Vista 2",
+      src: "/images/dormitorio-grande-2.webp",
     },
+    { id: 11, title: "Dormitorio con Cuchetas", src: "/images/cuchetas.webp" },
+    { id: 12, title: "Cuarto Chico", src: "/images/cuarto-chico.webp" },
+    { id: 13, title: "Baño Grande", src: "/images/baño-grande.webp" },
+    { id: 14, title: "Baño Chico", src: "/images/baño-chico.webp" },
+    { id: 15, title: "Baño Chico Vista 2", src: "/images/baño-chico-2.webp" },
+    { id: 16, title: "Comedor", src: "/images/comedor.webp" },
+    { id: 17, title: "Arco", src: "/images/arco.webp" },
+    { id: 18, title: "Fondo", src: "/images/fondo.webp" },
+    {
+      id: 19,
+      title: "Casa de Piedra de Noche",
+      src: "/images/casa-de-piedra-noche.webp",
+    },
+    { id: 20, title: "Fondo de Noche", src: "/images/fondo-noche.webp" },
   ];
 
   const openModal = (index: number) => {
