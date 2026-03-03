@@ -16,38 +16,40 @@ export default function GaleriaPage() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const images = [
-    { id: 2, title: "Piscina Vista 2", src: "/images/piscina-2.webp" },
-    { id: 3, title: "Piscina", src: "/images/piscina.webp" },
-    { id: 1, title: "Casa de Piedra", src: "/images/casa-de-piedra.webp" },
-    { id: 4, title: "Piscina de Noche", src: "/images/piscina-noche.webp" },
-    { id: 5, title: "Terraza", src: "/images/terraza.webp" },
-    { id: 6, title: "Parrilla", src: "/images/parrilla.webp" },
-    { id: 7, title: "Mesa de Pool", src: "/images/pool.webp" },
-    { id: 8, title: "Mesa de Ping Pong", src: "/images/ping-pong.webp" },
+    { id: 1, title: "Casa de Piedra", src: "/images/casa-de-piedra.webp?v=2" },
+    { id: 2, title: "Piscina Vista 2", src: "/images/piscina-2.webp?v=2" },
+    { id: 3, title: "Fondo", src: "/images/fondo.webp?v=2" },
+    { id: 4, title: "Piscina", src: "/images/piscina.webp?v=2" },
     {
-      id: 9,
+      id: 5,
       title: "Dormitorio Grande",
-      src: "/images/dormitorio-grande.webp",
+      src: "/images/dormitorio-grande.webp?v=2",
     },
+    { id: 6, title: "Terraza", src: "/images/terraza.webp?v=2" },
+    { id: 7, title: "Parrilla", src: "/images/parrilla.webp?v=2" },
+    { id: 8, title: "Mesa de Pool", src: "/images/pool.webp?v=2" },
+    { id: 9, title: "Mesa de Ping Pong", src: "/images/ping-pong.webp?v=2" },
+    { id: 10, title: "Arco", src: "/images/arco.webp?v=2" },
     {
-      id: 10,
-      title: "Dormitorio Grande Vista 2",
-      src: "/images/dormitorio-grande-2.webp",
+      id: 11,
+      title: "Baño Chico Vista 2",
+      src: "/images/baño-chico-2.webp?v=2",
     },
-    { id: 11, title: "Dormitorio con Cuchetas", src: "/images/cuchetas.webp" },
-    { id: 12, title: "Cuarto Chico", src: "/images/cuarto-chico.webp" },
-    { id: 13, title: "Baño Grande", src: "/images/baño-grande.webp" },
-    { id: 14, title: "Baño Chico", src: "/images/baño-chico.webp" },
-    { id: 15, title: "Baño Chico Vista 2", src: "/images/baño-chico-2.webp" },
-    { id: 16, title: "Comedor", src: "/images/comedor.webp" },
-    { id: 17, title: "Arco", src: "/images/arco.webp" },
-    { id: 18, title: "Fondo", src: "/images/fondo.webp" },
+    { id: 12, title: "Baño Chico", src: "/images/baño-chico.webp?v=2" },
+    { id: 13, title: "Cuarto Chico", src: "/images/cuarto-chico.webp?v=2" },
+    { id: 14, title: "Baño Grande", src: "/images/baño-grande.webp?v=2" },
     {
-      id: 19,
+      id: 15,
+      title: "Dormitorio con Cuchetas",
+      src: "/images/cuchetas.webp?v=2",
+    },
+    { id: 16, title: "Comedor", src: "/images/comedor.webp?v=2" },
+    {
+      id: 17,
       title: "Casa de Piedra de Noche",
-      src: "/images/casa-de-piedra-noche.webp",
+      src: "/images/casa-de-piedra-noche.webp?v=2",
     },
-    { id: 20, title: "Fondo de Noche", src: "/images/fondo-noche.webp" },
+    { id: 18, title: "Fondo de Noche", src: "/images/fondo-noche.webp?v=2" },
   ];
 
   const openModal = (index: number) => {
@@ -117,36 +119,6 @@ export default function GaleriaPage() {
           </VStack>
         </Container>
       </Box>
-
-      {/* Video Section */}
-      <Container maxW="container.xl" pb={{ base: 8, md: 12 }}>
-        <Box
-          position="relative"
-          paddingBottom={{ base: "60%", md: "40%" }}
-          height={0}
-          overflow="hidden"
-          maxW="1000px"
-          mx="auto"
-          borderRadius="2xl"
-          boxShadow="2xl"
-        >
-          <iframe
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              border: 0,
-              borderRadius: "1rem",
-            }}
-            src="https://www.youtube.com/embed/hHA6N5H6gGU"
-            title="Video de la propiedad"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </Box>
-      </Container>
 
       {/* Gallery Grid */}
       <Container maxW="container.xl" pb={{ base: 12, md: 20 }}>
