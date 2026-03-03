@@ -16,40 +16,40 @@ export default function GaleriaPage() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const images = [
-    { id: 1, title: "Casa de Piedra", src: "/images/casa-de-piedra.webp?v=2" },
-    { id: 2, title: "Piscina Vista 2", src: "/images/piscina-2.webp?v=2" },
-    { id: 3, title: "Fondo", src: "/images/fondo.webp?v=2" },
-    { id: 4, title: "Piscina", src: "/images/piscina.webp?v=2" },
+    { id: 1, title: "Casa de Piedra", src: "/images/casa-de-piedra.webp" },
+    { id: 2, title: "Piscina Vista 2", src: "/images/piscina-2.webp" },
+    { id: 3, title: "Fondo", src: "/images/fondo.webp" },
+    { id: 4, title: "Piscina", src: "/images/piscina.webp" },
     {
       id: 5,
       title: "Dormitorio Grande",
-      src: "/images/dormitorio-grande.webp?v=2",
+      src: "/images/dormitorio-grande.webp",
     },
-    { id: 6, title: "Terraza", src: "/images/terraza.webp?v=2" },
-    { id: 7, title: "Parrilla", src: "/images/parrilla.webp?v=2" },
-    { id: 8, title: "Mesa de Pool", src: "/images/pool.webp?v=2" },
-    { id: 9, title: "Mesa de Ping Pong", src: "/images/ping-pong.webp?v=2" },
-    { id: 10, title: "Arco", src: "/images/arco.webp?v=2" },
+    { id: 6, title: "Terraza", src: "/images/terraza.webp" },
+    { id: 7, title: "Parrilla", src: "/images/parrilla.webp" },
+    { id: 8, title: "Mesa de Pool", src: "/images/pool.webp" },
+    { id: 9, title: "Mesa de Ping Pong", src: "/images/ping-pong.webp" },
+    { id: 10, title: "Arco", src: "/images/arco.webp" },
     {
       id: 11,
       title: "Baño Chico Vista 2",
-      src: "/images/baño-chico-2.webp?v=2",
+      src: "/images/baño-chico-2.webp",
     },
-    { id: 12, title: "Baño Chico", src: "/images/baño-chico.webp?v=2" },
-    { id: 13, title: "Cuarto Chico", src: "/images/cuarto-chico.webp?v=2" },
-    { id: 14, title: "Baño Grande", src: "/images/baño-grande.webp?v=2" },
+    { id: 12, title: "Baño Chico", src: "/images/baño-chico.webp" },
+    { id: 13, title: "Cuarto Chico", src: "/images/cuarto-chico.webp" },
+    { id: 14, title: "Baño Grande", src: "/images/baño-grande.webp" },
     {
       id: 15,
       title: "Dormitorio con Cuchetas",
-      src: "/images/cuchetas.webp?v=2",
+      src: "/images/cuchetas.webp",
     },
-    { id: 16, title: "Comedor", src: "/images/comedor.webp?v=2" },
+    { id: 16, title: "Comedor", src: "/images/comedor.webp" },
     {
       id: 17,
       title: "Casa de Piedra de Noche",
-      src: "/images/casa-de-piedra-noche.webp?v=2",
+      src: "/images/casa-de-piedra-noche.webp",
     },
-    { id: 18, title: "Fondo de Noche", src: "/images/fondo-noche.webp?v=2" },
+    { id: 18, title: "Fondo de Noche", src: "/images/fondo-noche.webp" },
   ];
 
   const openModal = (index: number) => {
