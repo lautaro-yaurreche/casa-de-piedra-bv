@@ -1,519 +1,312 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Box,
-  Container,
-  Heading,
-  VStack,
-  Input,
-  Textarea,
-  Button,
-  createToaster,
-  Text,
-  SimpleGrid,
-} from "@chakra-ui/react";
-import { useWhatsAppThrottle } from "@/hooks/useWhatsAppThrottle";
+import Toast from "@/components/shared/Toast";
 
-const toaster = createToaster({
-  placement: "top-end",
-  duration: 5000,
-});
+interface ToastState {
+  message: string;
+  type: "success" | "error" | "info";
+}
 
-export default function ContactoPage() {
-  const throttledOpen = useWhatsAppThrottle(3000);
+export default function VentaPage() {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
-    purpose: "inversion",
+    phone: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState<ToastState | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    e.stopPropagation();
 
-    const purposeText =
-      formData.purpose === "inversion"
-        ? "Inversión para alquilar"
-        : "Vivienda permanente";
+    console.log("Form submitted", formData);
+    setIsSubmitting(true);
 
-    // Construir mensaje de WhatsApp
-    const message = `VENTA
+    try {
+      const payload = {
+        full_name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+        form_type: "venta",
+      };
 
-Nombre: ${formData.firstName} ${formData.lastName}
-Email: ${formData.email}
+      console.log("Sending payload:", payload);
 
-Interés: ${purposeText}
+      const response = await fetch("/api/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-Mensaje: ${formData.message}`;
+      console.log("Response status:", response.status);
 
-    // Abrir WhatsApp con throttle
-    const phoneNumber = "59897105450";
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Response error:", errorData);
+        throw new Error(errorData.error || "Error al enviar el mensaje");
+      }
 
-    const success = throttledOpen(whatsappUrl);
+      const result = await response.json();
+      console.log("Success:", result);
 
-    if (success) {
-      // Limpiar formulario
+      setToast({
+        message: "¡Mensaje enviado exitosamente! Te contactaremos pronto.",
+        type: "success",
+      });
+
       setFormData({
-        firstName: "",
-        lastName: "",
+        fullName: "",
         email: "",
-        purpose: "inversion",
+        phone: "",
         message: "",
       });
-
-      toaster.success({
-        title: "Redirigiendo a WhatsApp",
-        description: "Completa tu consulta por WhatsApp",
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setToast({
+        message: error instanceof Error ? error.message : "Error al enviar el mensaje. Intenta nuevamente.",
+        type: "error",
       });
-    } else {
-      toaster.error({
-        title: "Espera un momento",
-        description:
-          "Por favor espera unos segundos antes de volver a intentar",
-      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <Box bg="gray.50" minH="100vh">
-      <Box h="5.25rem" />
+    <div className="min-h-screen bg-gray-50">
+      {/* Spacer for navbar */}
+      <div className="h-20" />
+
       {/* Header Section */}
-      <Box py={{ base: 16, md: 20 }}>
-        <Container maxW="container.xl">
-          <VStack gap={4} textAlign="center">
-            <Text
-              fontSize="sm"
-              fontWeight="semibold"
-              textTransform="uppercase"
-              letterSpacing="wider"
-              color="primary.600"
-            >
+      <div className="py-16 md:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4">
+            <p className="text-sm font-semibold uppercase tracking-wider text-primary-600">
               Oportunidad
-            </Text>
-            <Heading
-              as="h1"
-              fontSize={{ base: "4xl", md: "5xl" }}
-              fontWeight="bold"
-            >
+            </p>
+            <h1 className="text-4xl md:text-5xl font-bold text-accent">
               Venta
-            </Heading>
-            <Text fontSize={{ base: "lg", md: "xl" }} maxW="3xl">
+            </h1>
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
               Una propuesta única
-            </Text>
-          </VStack>
-        </Container>
-      </Box>
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Content Section */}
-      <Container maxW="container.xl" pb={{ base: 12, md: 20 }}>
-        <VStack gap={6} align="stretch">
-          {/* Section Title */}
-          <Box>
-            <Heading
-              as="h2"
-              fontSize={{ base: "2xl", md: "3xl" }}
-              fontWeight="bold"
-              color="primary.700"
-              mb={3}
-            >
-              ¿Por qué invertir aquí?
-            </Heading>
-            <Text fontSize="lg" color="gray.600" mb={5}>
-              Una oportunidad real para quienes buscan un hogar rodeado de
-              naturaleza o un negocio rentable con retorno comprobado.
-            </Text>
-            <Box
-              w="full"
-              p={4}
-              bg="primary.50"
-              borderRadius="lg"
-              border="1px"
-              borderColor="primary.200"
-            >
-              <Text
-                fontSize="md"
-                fontWeight="semibold"
-                color="primary.700"
-                mb="0.125rem"
-              >
-                Consultas directas
-              </Text>
-              <Text fontSize="md" color="primary.600">
-                Trato directo con la propietaria. <br /> Precio real, sin
-                sobrevaloraciones ni comisiones de inmobiliaria. <br />
-                Ya sea que busques un lugar para vivir o una inversión segura,
-                te acompañamos en todo el proceso.
-              </Text>
-            </Box>
-          </Box>
+      <div className="pb-12 md:pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-6">
+            {/* Section Title */}
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-primary-700 mb-3">
+                ¿Por qué invertir aquí?
+              </h2>
+              <p className="text-lg text-gray-600 mb-5">
+                Una oportunidad real para quienes buscan un hogar rodeado de
+                naturaleza o un negocio rentable con retorno comprobado.
+              </p>
+              <div className="w-full p-4 bg-primary-50 rounded-lg border border-primary-200">
+                <p className="text-sm font-semibold text-primary-700 mb-0.5">
+                  Consultas directas
+                </p>
+                <p className="text-sm text-primary-600">
+                  Trato directo con la propietaria. <br /> Precio real, sin
+                  sobrevaloraciones ni comisiones de inmobiliaria. <br />
+                  Ya sea que busques un lugar para vivir o una inversión segura,
+                  te acompañamos en todo el proceso.
+                </p>
+              </div>
+            </div>
 
-          {/* Information Grid - Two columns */}
-          <SimpleGrid
-            columns={{ base: 1, lg: 2 }}
-            gap={{ base: 8, lg: 12 }}
-            w="full"
-            mb={8}
-          >
-            {/* Left: Sale Information 1 */}
-            <Box
-              bg="white"
-              p={8}
-              borderRadius="2xl"
-              boxShadow="lg"
-              border="1px"
-              borderColor="gray.100"
-            >
-              <VStack align="start" gap={5}>
-                <Box>
-                  <Text
-                    fontSize="sm"
-                    fontWeight="bold"
-                    color="accent.600"
-                    textTransform="uppercase"
-                    letterSpacing="wide"
-                    mb={3}
-                  >
-                    Inversión para alquilar
-                  </Text>
-                  <VStack align="start" gap={3}>
-                    <Box>
-                      <Text fontWeight="semibold" color="gray.800" mb={1}>
-                        📈 Demanda en auge y fuerte revalorización
-                      </Text>
-                      <Text fontSize="sm" color="gray.600">
-                        Zona con alto movimiento turístico y ocupación sostenida
-                        durante todo el año. Plusvalía en crecimiento
-                        exponencial.
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text fontWeight="semibold" color="gray.800" mb={1}>
-                        💰 Mayor rentabilidad, menor costo
-                      </Text>
-                      <Text fontSize="sm" color="gray.600">
-                        ROI alto con gastos bajos y costo por m² hasta 3 veces
-                        más económico que en Montevideo o Punta del Este.
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text fontWeight="semibold" color="gray.800" mb={1}>
-                        📊 Ubicación estratégica (plusvalía asegurada)
-                      </Text>
-                      <Text fontSize="sm" color="gray.600">
-                        Zona en expansión constante, con entorno natural,
-                        seguridad y tranquilidad.
-                      </Text>
-                    </Box>
-                  </VStack>
-                </Box>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+              {/* Left: Sale Information */}
+              <div className="space-y-6">
+                <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                  <div className="space-y-5">
+                    <div>
+                      <p className="text-sm font-bold text-accent uppercase tracking-wide mb-3">
+                        Características destacadas
+                      </p>
+                      <div className="space-y-3">
+                        <div>
+                          <p className="font-semibold text-gray-800 mb-1">
+                            Propiedad en venta
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Lista para disfrutar o comenzar a generar ingresos
+                            desde el primer día.
+                          </p>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-800 mb-1">
+                            Ideal para inversión
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Negocio de alquiler con alta demanda turística
+                            comprobada en la zona. (+100k visitas online)
+                          </p>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-800 mb-1">
+                            Entorno natural
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Ubicación privilegiada, rodeada de árboles,
+                            tranquilidad y a minutos del mar.
+                          </p>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-800 mb-1">
+                            Diseño único
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Construcción sólida, fresca en verano y cálida en
+                            invierno, con detalles en piedra y amplios espacios
+                            exteriores.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
-                <Box w="full" h="1px" bg="gray.200" my={2} />
+                    <div className="w-full h-px bg-gray-200 my-2" />
 
-                <Box>
-                  <Text
-                    fontSize="sm"
-                    fontWeight="bold"
-                    color="accent.600"
-                    textTransform="uppercase"
-                    letterSpacing="wide"
-                    mb={4}
-                  >
-                    Si estas interesado, te pasamos:
-                  </Text>
-                  <VStack align="start" gap={2}>
-                    <Text fontSize="sm" color="gray.700">
-                      📄 PDF con propuesta completa y detalles de la casa.
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      📊 Análisis de rentabilidad.
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      💰 Información sobre ingresos anuales y costos reales de
-                      mantenimiento.
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      🏡 Beneficios de la ubicación y crecimiento del área en
-                      los últimos años.
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      💎 Nuestra propuesta "Full Service", con un equipo de
-                      trabajo consolidado desde hace +20 años y una cartera de
-                      clientes segura, garantizamos tu rentabilidad.
-                    </Text>
-                  </VStack>
-                </Box>
-              </VStack>
-            </Box>
+                    <div>
+                      <p className="text-sm font-bold text-accent uppercase tracking-wide mb-4">
+                        Si estas interesado, te pasamos:
+                      </p>
+                      <div className="space-y-2">
+                        <p className="text-sm text-gray-700">
+                          📄 PDF con propuesta completa y detalles de la casa
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          📊 Análisis de rentabilidad y retorno real
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          💰 Información sobre ingresos anuales y costos reales
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          💎 Nuestra propuesta "Full Service", con un equipo de
+                          trabajo consolidado desde hace +20 años y una cartera
+                          de clientes segura.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            {/* Right: Sale Information 2 */}
-            <Box
-              bg="white"
-              p={8}
-              borderRadius="2xl"
-              boxShadow="lg"
-              border="1px"
-              borderColor="gray.100"
-            >
-              <VStack align="start" gap={5}>
-                <Box>
-                  <Text
-                    fontSize="sm"
-                    fontWeight="bold"
-                    color="accent.600"
-                    textTransform="uppercase"
-                    letterSpacing="wide"
-                    mb={3}
-                  >
-                    Vivienda permanente
-                  </Text>
-                  <VStack align="start" gap={3}>
-                    <Box>
-                      <Text fontWeight="semibold" color="gray.800" mb={1}>
-                        🌿 Entorno natural privilegiado
-                      </Text>
-                      <Text fontSize="sm" color="gray.600">
-                        Ideal para quienes buscan un estilo de vida tranquilo,
-                        en contacto con la naturaleza.
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text fontWeight="semibold" color="gray.800" mb={1}>
-                        🔥 Comodidades completas
-                      </Text>
-                      <Text fontSize="sm" color="gray.600">
-                        Todo pensado para disfrutar en cualquier época del año
-                        con el máximo comfort.
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text fontWeight="semibold" color="gray.800" mb={1}>
-                        💫 Tranquilidad y calidad de vida aseguradas
-                      </Text>
-                      <Text fontSize="sm" color="gray.600">
-                        Zona segura y silenciosa, con vecinos permanentes,
-                        servicios a menos de una cuadra y a minutos de
-                        Piriápolis y Punta del Este. Perfecta para familias o
-                        para quienes buscan su residencia definitiva junto al
-                        mar.
-                      </Text>
-                    </Box>
-                  </VStack>
-                </Box>
+              {/* Right: Contact Form */}
+              <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 h-fit">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">
+                  Contactanos
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Completá el formulario y te contactaremos a la brevedad
+                </p>
 
-                <Box w="full" h="1px" bg="gray.200" my={2} />
-
-                <Box>
-                  <Text
-                    fontSize="sm"
-                    fontWeight="bold"
-                    color="accent.600"
-                    textTransform="uppercase"
-                    letterSpacing="wide"
-                    mb={4}
-                  >
-                    Si estas interesado, te pasamos:
-                  </Text>
-                  <VStack align="start" gap={2}>
-                    <Text fontSize="sm" color="gray.700">
-                      📄 PDF con detalles y equipamiento de la casa
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      💡 Costos de mantenimiento y servicios de la zona
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      🗺️ Guía práctica con transporte, comercios y actividades
-                      cercanas
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      ♦️ Posibilidad de conversión a “vivienda de descanso” con
-                      servicio de alquiler estacional
-                    </Text>
-                  </VStack>
-                </Box>
-              </VStack>
-            </Box>
-          </SimpleGrid>
-
-          {/* Contact Form - Centered Below */}
-          <Box maxW="800px" mx="auto" w="full">
-            <Box
-              bg="white"
-              p={{ base: 8, md: 10 }}
-              borderRadius="2xl"
-              boxShadow="xl"
-              border="1px"
-              borderColor="gray.100"
-            >
-              <Heading
-                as="h3"
-                fontSize={{ base: "xl", md: "2xl" }}
-                fontWeight="bold"
-                color="gray.800"
-                mb={4}
-              >
-                Contactanos
-              </Heading>
-
-              <Box as="form" onSubmit={handleSubmit}>
-                <VStack gap={4}>
-                  <SimpleGrid columns={{ base: 1, md: 2 }} gap={5} w="full">
-                    <Box>
-                      <Text mb={2} fontWeight="medium" color="gray.700">
-                        Nombre *
-                      </Text>
-                      <Input
-                        placeholder="Tu nombre"
-                        value={formData.firstName}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            firstName: e.target.value,
-                          })
-                        }
-                        required
-                        size="lg"
-                        borderColor="gray.300"
-                        _hover={{ borderColor: "primary.500" }}
-                        _focus={{
-                          borderColor: "primary.600",
-                          boxShadow: "0 0 0 1px primary.600",
-                        }}
-                      />
-                    </Box>
-                    <Box>
-                      <Text mb={2} fontWeight="medium" color="gray.700">
-                        Apellido *
-                      </Text>
-                      <Input
-                        placeholder="Tu apellido"
-                        value={formData.lastName}
-                        onChange={(e) =>
-                          setFormData({ ...formData, lastName: e.target.value })
-                        }
-                        required
-                        size="lg"
-                        borderColor="gray.300"
-                        _hover={{ borderColor: "primary.500" }}
-                        _focus={{
-                          borderColor: "primary.600",
-                          boxShadow: "0 0 0 1px primary.600",
-                        }}
-                      />
-                    </Box>
-                  </SimpleGrid>
-
-                  <Box w="full">
-                    <Text mb={2} fontWeight="medium" color="gray.700">
-                      Email *
-                    </Text>
-                    <Input
-                      type="email"
-                      placeholder="tu@email.com"
-                      value={formData.email}
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Nombre completo */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Nombre completo *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.fullName}
                       onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
+                        setFormData({ ...formData, fullName: e.target.value })
                       }
                       required
-                      size="lg"
-                      borderColor="gray.300"
-                      _hover={{ borderColor: "primary.500" }}
-                      _focus={{
-                        borderColor: "primary.600",
-                        boxShadow: "0 0 0 1px primary.600",
-                      }}
+                      placeholder="Tu nombre completo"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
                     />
-                  </Box>
+                  </div>
 
-                  <Box w="full" position="relative">
-                    <Text mb={2} fontWeight="medium" color="gray.700">
-                      ¿Cuál es tu interés? *
-                    </Text>
-                    <select
-                      value={formData.purpose}
-                      onChange={(e) =>
-                        setFormData({ ...formData, purpose: e.target.value })
-                      }
-                      required
-                      style={{
-                        width: "100%",
-                        height: "3rem",
-                        borderColor: "#CBD5E0",
-                        borderRadius: "0.375rem",
-                        borderWidth: "1px",
-                        paddingLeft: "1rem",
-                        paddingRight: "3rem",
-                        fontSize: "1rem",
-                        backgroundColor: "white",
-                        appearance: "none",
-                        WebkitAppearance: "none",
-                        MozAppearance: "none",
-                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "right 0.75rem center",
-                        backgroundSize: "1.25rem",
-                      }}
-                    >
-                      <option value="inversion">
-                        Inversión para alquilarla
-                      </option>
-                      <option value="vivienda">Vivienda permanente</option>
-                    </select>
-                  </Box>
+                  {/* Email y Phone en la misma fila */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Email */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Email *
+                      </label>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
+                        required
+                        placeholder="tu@email.com"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                      />
+                    </div>
 
-                  <Box w="full">
-                    <Text mb={2} fontWeight="medium" color="gray.700">
-                      Mensaje *
-                    </Text>
-                    <Textarea
-                      placeholder="Cuéntanos qué te interesa saber sobre la propiedad..."
+                    {/* Phone */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Teléfono *
+                      </label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) =>
+                          setFormData({ ...formData, phone: e.target.value })
+                        }
+                        required
+                        placeholder="+598 99 123 456"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Message (optional) */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Mensaje adicional (opcional)
+                    </label>
+                    <textarea
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
-                      rows={2}
-                      required
-                      size="lg"
-                      borderColor="gray.300"
-                      _hover={{ borderColor: "primary.500" }}
-                      _focus={{
-                        borderColor: "primary.600",
-                        boxShadow: "0 0 0 1px primary.600",
-                      }}
+                      rows={3}
+                      placeholder="Cuéntanos qué te interesa saber sobre la propiedad..."
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none"
                     />
-                  </Box>
+                  </div>
 
-                  <Button
+                  {/* Submit Button */}
+                  <button
                     type="submit"
-                    size="lg"
-                    w="full"
-                    bg="primary.600"
-                    color="white"
-                    py={6}
-                    fontSize="lg"
-                    fontWeight="semibold"
-                    _hover={{
-                      transform: "translateY(-2px)",
-                      boxShadow: "xl",
-                      bg: "primary.700",
-                    }}
-                    transition="all 0.2s"
+                    disabled={isSubmitting}
+                    className="w-full bg-accent text-beige py-3 px-6 rounded-lg font-semibold hover:bg-accent/90 transition-all hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
-                    Enviar consulta
-                  </Button>
+                    {isSubmitting ? "Enviando..." : "Enviar consulta →"}
+                  </button>
 
-                  <Text fontSize="sm" color="gray.500" textAlign="center">
-                    Te responderemos a la brevedad
-                  </Text>
-                </VStack>
-              </Box>
-            </Box>
-          </Box>
-        </VStack>
-      </Container>
-    </Box>
+                  <p className="text-sm text-gray-600 text-center mt-3">
+                    Te responderemos en menos de 24 horas
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+    </div>
   );
 }

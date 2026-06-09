@@ -1,17 +1,19 @@
-"use client";
-
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  Button,
-  VStack,
-  SimpleGrid,
-  Stack,
-  Icon,
-} from "@chakra-ui/react";
 import Link from "next/link";
+import Image from "next/image";
+import type { Metadata } from "next";
+import { Button } from "@/components/ui/button";
+import PublicLayout from "@/components/layouts/PublicLayout";
+
+export const metadata: Metadata = {
+  title: "Inicio",
+  description:
+    "Alquiler y venta de propiedades en Bella Vista, Piriápolis. Encuentra tu casa ideal a pasos de la playa con todas las comodidades para unas vacaciones perfectas.",
+  openGraph: {
+    title: "Casa de Piedra BV | Alquiler y Venta en Bella Vista",
+    description:
+      "Alquiler y venta de propiedades en Bella Vista, Piriápolis. Encuentra tu casa ideal a pasos de la playa.",
+  },
+};
 
 export default function Home() {
   const features = [
@@ -42,134 +44,85 @@ export default function Home() {
   ];
 
   return (
-    <Box>
+    <PublicLayout>
+    <div>
       {/* Hero Section - Full Height with Image Background */}
-      <Box
-        position="relative"
-        h={{ base: "70vh", md: "100vh" }}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        overflow="hidden"
-        backgroundImage="url('/hero-background.jpg')"
-        backgroundSize="cover"
-        backgroundPosition="center"
-        backgroundRepeat="no-repeat"
-        _before={{
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          bg: "rgba(0, 0, 0, 0.4)",
-          zIndex: 1,
-        }}
-      >
-        <Container maxW="container.xl" position="relative" zIndex={2}>
-          <VStack gap={8} textAlign="center" color="white">
-            <Box>
-              <Text
-                fontSize="lg"
-                fontWeight="semibold"
-                textTransform="uppercase"
-                letterSpacing="wider"
-                color="primary.500"
-              >
+      <div className="relative h-[70vh] md:h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <Image
+          src="/hero-background.jpg"
+          alt="Casa de Piedra Bella Vista"
+          fill
+          priority
+          quality={90}
+          className="object-cover"
+        />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/40 z-[1]" />
+
+        {/* Content */}
+        <div className="relative z-[2] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center gap-8 text-center text-white">
+            <div>
+              <p className="text-lg font-semibold uppercase tracking-wider text-primary-500 mb-2">
                 Venta y alquiler
-              </Text>
-              <Heading
-                as="h1"
-                fontSize={{ base: "4xl", md: "5xl" }}
-                fontWeight="bold"
-                lineHeight="1.2"
-                textShadow="0 2px 10px rgba(0,0,0,0.2)"
-              >
+              </p>
+              <h1 className="text-4xl md:text-5xl font-bold leading-tight text-shadow-md mb-2">
                 Casa de piedra, Bella Vista
-              </Heading>
-              <Text
-                fontSize={{ base: "xl", md: "3xl" }}
-                fontWeight="500"
-                textShadow="0 1px 5px rgba(0,0,0,0.1)"
-              >
+              </h1>
+              <p className="text-xl md:text-3xl font-medium text-shadow-sm">
                 Piriápolis, Maldonado
-              </Text>
-            </Box>
-            <Link href="/reservas">
+              </p>
+            </div>
+            <Link href="/propiedades/casa-de-piedra">
               <Button
                 size="lg"
-                bg="primary.500"
-                color="accent.500"
-                px={8}
-                py={6}
-                fontSize="lg"
-                fontWeight="semibold"
-                _hover={{ transform: "translateY(-2px)", boxShadow: "xl" }}
-                transition="all 0.3s"
+                className="bg-primary text-accent hover:bg-primary/90 px-8 py-6 text-lg font-semibold transition-all hover:-translate-y-0.5 hover:shadow-xl"
               >
                 Reservar Ahora
               </Button>
             </Link>
-          </VStack>
-        </Container>
-      </Box>
+          </div>
+        </div>
+      </div>
 
       {/* Features Section */}
-      <Container maxW="container.xl" py={{ base: 16, md: 24 }}>
-        <VStack gap={16}>
-          <Box textAlign="center">
-            <Text
-              fontSize="sm"
-              fontWeight="semibold"
-              textTransform="uppercase"
-              letterSpacing="wider"
-              color="primary.600"
-              mb={3}
-            >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div className="flex flex-col gap-16">
+          {/* Header */}
+          <div className="text-center">
+            <p className="text-sm font-semibold uppercase tracking-wider text-primary-800 mb-3">
               Nuestros Beneficios
-            </Text>
-            <Heading
-              as="h2"
-              fontSize={{ base: "3xl", md: "4xl" }}
-              mb={4}
-              color="accent.500"
-            >
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-accent">
               ¿Por qué elegirnos?
-            </Heading>
-            <Text fontSize="lg" color="gray.600" maxW="2xl" mx="auto">
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Ofrecemos una experiencia única con todas las comodidades.
-            </Text>
-          </Box>
+            </p>
+          </div>
 
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={8} w="full">
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <Box
+              <div
                 key={index}
-                p={8}
-                bg="white"
-                borderRadius="xl"
-                boxShadow="lg"
-                textAlign="center"
-                transition="all 0.3s"
-                _hover={{
-                  transform: "translateY(-8px)",
-                  boxShadow: "2xl",
-                }}
+                className="p-8 bg-white rounded-xl shadow-lg text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
               >
-                <Text fontSize="4xl" mb={4}>
-                  {feature.icon}
-                </Text>
-                <Heading as="h3" size="md" mb={3} whiteSpace="pre-line">
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-bold mb-3 whitespace-pre-line">
                   {feature.title}
-                </Heading>
-                <Text color="gray.600" whiteSpace="pre-line">
+                </h3>
+                <p className="text-gray-600 whitespace-pre-line">
                   {feature.description}
-                </Text>
-              </Box>
+                </p>
+              </div>
             ))}
-          </SimpleGrid>
-        </VStack>
-      </Container>
-    </Box>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    </PublicLayout>
   );
 }

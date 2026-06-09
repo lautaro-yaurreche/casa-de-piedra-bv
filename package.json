@@ -6,25 +6,38 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "upload-images": "tsx scripts/upload-images.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@chakra-ui/next-js": "^2.4.2",
-    "@chakra-ui/react": "^3.27.1",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
+    "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-toast": "^1.2.15",
+    "@supabase/ssr": "^0.9.0",
+    "@supabase/supabase-js": "^2.99.0",
     "@vercel/analytics": "^1.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.24",
     "googleapis": "^164.0.0",
+    "lucide-react": "^0.577.0",
     "next": "15.5.7",
     "nodemailer": "^7.0.9",
     "react": "^19.2.1",
     "react-calendar": "^6.0.0",
-    "react-dom": "^19.2.1"
+    "react-dom": "^19.2.1",
+    "react-hook-form": "^7.71.2",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^24.8.1",
@@ -32,6 +45,11 @@
     "@types/react": "^19.2.2",
     "@types/react-calendar": "^3.9.0",
     "@types/react-dom": "^19.2.2",
+    "autoprefixer": "^10.4.27",
+    "dotenv": "^17.3.1",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

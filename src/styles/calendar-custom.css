@@ -1,0 +1,91 @@
+/* Custom styles for react-calendar in AvailabilityCalendar */
+.availability-calendar-container .react-calendar {
+  width: 100%;
+  border: none;
+  font-family: inherit;
+  background: white;
+}
+
+.availability-calendar-container .react-calendar__tile {
+  padding: 1rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+}
+
+.availability-calendar-container .react-calendar__tile:enabled:hover {
+  background-color: #f3f4f6;
+}
+
+.availability-calendar-container .react-calendar__tile--active {
+  background-color: #D1B16D !important;
+  color: white;
+}
+
+/* Remove highlight from current day */
+.availability-calendar-container .react-calendar__tile--now {
+  background-color: transparent;
+}
+
+.availability-calendar-container .react-calendar__tile--now:enabled:hover {
+  background-color: #f3f4f6;
+}
+
+.availability-calendar-container .react-calendar__tile.blocked-date {
+  background-color: #e5e7eb !important;
+  color: #6b7280;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* Selected range styles - connected appearance */
+.availability-calendar-container .react-calendar__tile.range-start {
+  background-color: #D1B16D !important;
+  color: white;
+  font-weight: 600;
+  border-radius: 0.5rem 0 0 0.5rem !important;
+}
+
+.availability-calendar-container .react-calendar__tile.range-end {
+  background-color: #D1B16D !important;
+  color: white;
+  font-weight: 600;
+  border-radius: 0 0.5rem 0.5rem 0 !important;
+}
+
+.availability-calendar-container .react-calendar__tile.range-middle {
+  background-color: #E8D9A8 !important;
+  color: #1D1202;
+  border-radius: 0 !important;
+}
+
+.availability-calendar-container .react-calendar__tile.range-start:hover,
+.availability-calendar-container .react-calendar__tile.range-end:hover {
+  background-color: #B39855 !important;
+}
+
+.availability-calendar-container .react-calendar__tile.range-middle:hover {
+  background-color: #DCC994 !important;
+}
+
+.availability-calendar-container .react-calendar__tile:disabled {
+  background-color: #f9fafb;
+  color: #d1d5db;
+}
+
+.availability-calendar-container .react-calendar__month-view__weekdays {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.availability-calendar-container .react-calendar__navigation button {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1D1202;
+}
+
+.availability-calendar-container .react-calendar__navigation button:enabled:hover {
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+}

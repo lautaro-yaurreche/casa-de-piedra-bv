@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Animaciones */
 @keyframes slideRight {
   0% {
     left: -100%;
@@ -7,5 +12,27 @@
   }
   100% {
     left: 150%;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom utilities */
+@layer utilities {
+  .animation-slide-right {
+    animation: slideRight 2s ease-in-out;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
   }
 }

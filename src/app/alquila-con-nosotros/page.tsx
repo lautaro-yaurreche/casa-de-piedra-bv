@@ -1,348 +1,277 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Box,
-  Container,
-  Heading,
-  VStack,
-  Input,
-  Textarea,
-  Button,
-  createToaster,
-  Text,
-  SimpleGrid,
-} from "@chakra-ui/react";
-import { useWhatsAppThrottle } from "@/hooks/useWhatsAppThrottle";
+import Toast from "@/components/shared/Toast";
 
-const toaster = createToaster({
-  placement: "top-end",
-  duration: 5000,
-});
+interface ToastState {
+  message: string;
+  type: "success" | "error" | "info";
+}
 
 export default function AlquilaConNosotrosPage() {
-  const throttledOpen = useWhatsAppThrottle(3000);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    location: "",
+    fullName: "",
+    email: "",
+    phone: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState<ToastState | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    e.stopPropagation();
 
-    // Construir mensaje de WhatsApp
-    const message = `ALQUILÁ CON NOSOTROS
+    console.log("Form submitted", formData);
+    setIsSubmitting(true);
 
-Nombre: ${formData.firstName} ${formData.lastName}
-Ubicación de la casa: ${formData.location}
+    try {
+      const payload = {
+        full_name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+        form_type: "alquila-con-nosotros",
+      };
 
-Mensaje: ${formData.message}`;
+      console.log("Sending payload:", payload);
 
-    // Abrir WhatsApp con throttle
-    const phoneNumber = "59897105450";
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
+      const response = await fetch("/api/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    const success = throttledOpen(whatsappUrl);
+      console.log("Response status:", response.status);
 
-    if (success) {
-      // Limpiar formulario
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Response error:", errorData);
+        throw new Error(errorData.error || "Error al enviar el mensaje");
+      }
+
+      const result = await response.json();
+      console.log("Success:", result);
+
+      setToast({
+        message: "¡Mensaje enviado exitosamente! Te contactaremos pronto.",
+        type: "success",
+      });
+
       setFormData({
-        firstName: "",
-        lastName: "",
-        location: "",
+        fullName: "",
+        email: "",
+        phone: "",
         message: "",
       });
-
-      toaster.success({
-        title: "Redirigiendo a WhatsApp",
-        description: "Completa tu consulta por WhatsApp",
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setToast({
+        message: error instanceof Error ? error.message : "Error al enviar el mensaje. Intenta nuevamente.",
+        type: "error",
       });
-    } else {
-      toaster.error({
-        title: "Espera un momento",
-        description:
-          "Por favor espera unos segundos antes de volver a intentar",
-      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <Box bg="gray.50" minH="100vh">
-      <Box h="5.25rem" />
+    <div className="min-h-screen bg-gray-50">
+      {/* Spacer for navbar */}
+      <div className="h-20" />
+
       {/* Header Section */}
-      <Box py={{ base: 16, md: 20 }}>
-        <Container maxW="container.xl">
-          <VStack gap={4} textAlign="center">
-            <Text
-              fontSize="sm"
-              fontWeight="semibold"
-              textTransform="uppercase"
-              letterSpacing="wider"
-              color="primary.600"
-            >
+      <div className="py-16 md:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4">
+            <p className="text-sm font-semibold uppercase tracking-wider text-primary-600">
               Maximizá tu inversión
-            </Text>
-            <Heading
-              as="h1"
-              fontSize={{ base: "4xl", md: "5xl" }}
-              fontWeight="bold"
-            >
+            </p>
+            <h1 className="text-4xl md:text-5xl font-bold text-accent">
               Alquilá con nosotros
-            </Heading>
-            <Text fontSize={{ base: "lg", md: "xl" }} maxW="3xl">
+            </h1>
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
               Generá ingresos con tu propiedad sin complicaciones
-            </Text>
-          </VStack>
-        </Container>
-      </Box>
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Content Section */}
-      <Container maxW="container.xl" pb={{ base: 12, md: 20 }}>
-        {/* Pricing Callout */}
-        <Box
-          mb={8}
-          p={6}
-          bg="primary.50"
-          borderRadius="xl"
-          border="2px"
-          borderColor="primary.200"
-          textAlign="center"
-        >
-          <Text
-            fontSize={{ base: "md", md: "lg" }}
-            color="primary.800"
-            fontWeight="medium"
-            lineHeight="tall"
-          >
-            💰 Vos ponés el precio y recibís el 100%, sin descuentos ni
-            comisiones.
-          </Text>
-        </Box>
+      <div className="pb-12 md:pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Pricing Callout */}
+          <div className="mb-8 p-6 bg-primary-50 rounded-xl border-2 border-primary-200 text-center">
+            <p className="text-base md:text-lg text-primary-800 font-medium leading-relaxed">
+              💰 Vos ponés el precio y recibís el 100%, sin descuentos ni
+              comisiones.
+            </p>
+          </div>
 
-        <SimpleGrid
-          columns={{ base: 1, lg: 2 }}
-          gap={{ base: 8, lg: 12 }}
-          w="full"
-        >
-          {/* Left: Service Information */}
-          <VStack align="stretch" gap={6}>
-            <Box
-              bg="white"
-              p={8}
-              borderRadius="2xl"
-              boxShadow="lg"
-              border="1px"
-              borderColor="gray.100"
-            >
-              <VStack align="start" gap={5}>
-                <Box>
-                  <Text fontSize="lg" color="gray.700" lineHeight="tall" mb={4}>
-                    Contamos con un equipo con +20 años de experiencia en el
-                    rubro inmobiliario, dedicado a que obtengas el mejor
-                    rendimiento de tu propiedad sin perder tiempo.
-                  </Text>
-                  <Text fontSize="lg" color="gray.700" lineHeight="tall" mb={4}>
-                    Hacemos un servicio integral y completo: publicidad,
-                    negociación, reservas, atención a huéspedes, mantenimiento y
-                    entrega/recibo de llaves.
-                  </Text>
-                  <Text
-                    fontSize="lg"
-                    fontWeight="semibold"
-                    color="primary.700"
-                    lineHeight="tall"
-                  >
-                    Vos disfrutás de las ganancias, nosotros nos encargamos del
-                    resto.
-                  </Text>
-                </Box>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* Left: Service Information */}
+            <div className="space-y-6">
+              <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                <div className="space-y-5">
+                  <div>
+                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                      Contamos con un equipo con +20 años de experiencia en el
+                      rubro inmobiliario, dedicado a que obtengas el mejor
+                      rendimiento de tu propiedad sin perder tiempo.
+                    </p>
+                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                      Hacemos un servicio integral y completo: publicidad,
+                      negociación, reservas, atención a huéspedes, mantenimiento
+                      y entrega/recibo de llaves.
+                    </p>
+                    <p className="text-lg font-semibold text-primary-700 leading-relaxed">
+                      Vos disfrutás de las ganancias, nosotros nos encargamos
+                      del resto.
+                    </p>
+                  </div>
 
-                <Box w="full" h="1px" bg="gray.200" my={2} />
+                  <div className="w-full h-px bg-gray-200 my-2" />
 
-                <Box>
-                  <Text
-                    fontSize="sm"
-                    fontWeight="bold"
-                    color="accent.600"
-                    textTransform="uppercase"
-                    letterSpacing="wide"
-                    mb={4}
-                  >
-                    Nuestros servicios incluyen:
-                  </Text>
-                  <VStack align="start" gap={2}>
-                    <Text fontSize="sm" color="gray.700">
-                      🏖️ Abarcamos tanto alquileres anuales como por temporada.
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      📣 Publicación profesional en las principales plataformas.
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      🗓️ Gestión integral de negociación, reservas y
-                      comunicación con los huéspedes.
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      💬 Atención directa 24/7, personalizada y con seguimiento
-                      durante toda la estadía.
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      🧹 Supervisión de mantenimiento.
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      📊 Reportes de ingresos y ocupación, con total
-                      transparencia.
-                    </Text>
-                    <Text fontSize="sm" color="gray.700">
-                      🧾 Cobro y control de pagos, para que recibas tus
-                      ganancias sin demoras.
-                    </Text>
-                  </VStack>
-                </Box>
-              </VStack>
-            </Box>
-          </VStack>
+                  <div>
+                    <p className="text-sm font-bold text-accent uppercase tracking-wide mb-4">
+                      Nuestros servicios incluyen:
+                    </p>
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-700">
+                        🏖️ Abarcamos tanto alquileres anuales como por
+                        temporada.
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        📣 Publicación profesional en las principales
+                        plataformas.
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        🗓️ Gestión integral de negociación, reservas y
+                        comunicación con los huéspedes.
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        🧹 Supervisión de mantenimiento.
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        📊 Reportes de ingresos y ocupación, con total
+                        transparencia.
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        🧾 Cobro y control de pagos, para que recibas tus
+                        ganancias sin demoras.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          {/* Right: Contact Form */}
-          <Box
-            bg="white"
-            p={{ base: 8, md: 8 }}
-            borderRadius="2xl"
-            boxShadow="xl"
-            border="1px"
-            borderColor="gray.100"
-            h="fit-content"
-          >
-            <Heading
-              as="h3"
-              fontSize={{ base: "xl", md: "2xl" }}
-              fontWeight="bold"
-              color="gray.800"
-              mb={4}
-            >
-              Contactanos
-            </Heading>
+            {/* Right: Contact Form */}
+            <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 h-fit">
+              <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">
+                Contactanos
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Completá el formulario y te contactaremos a la brevedad
+              </p>
 
-            <Box as="form" onSubmit={handleSubmit}>
-              <VStack gap={4}>
-                <SimpleGrid columns={{ base: 1, md: 2 }} gap={5} w="full">
-                  <Box>
-                    <Text mb={2} fontWeight="medium" color="gray.700">
-                      Nombre *
-                    </Text>
-                    <Input
-                      placeholder="Tu nombre"
-                      value={formData.firstName}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          firstName: e.target.value,
-                        })
-                      }
-                      required
-                      size="lg"
-                      borderColor="gray.300"
-                      _hover={{ borderColor: "primary.500" }}
-                      _focus={{
-                        borderColor: "primary.600",
-                        boxShadow: "0 0 0 1px primary.600",
-                      }}
-                    />
-                  </Box>
-                  <Box>
-                    <Text mb={2} fontWeight="medium" color="gray.700">
-                      Apellido *
-                    </Text>
-                    <Input
-                      placeholder="Tu apellido"
-                      value={formData.lastName}
-                      onChange={(e) =>
-                        setFormData({ ...formData, lastName: e.target.value })
-                      }
-                      required
-                      size="lg"
-                      borderColor="gray.300"
-                      _hover={{ borderColor: "primary.500" }}
-                      _focus={{
-                        borderColor: "primary.600",
-                        boxShadow: "0 0 0 1px primary.600",
-                      }}
-                    />
-                  </Box>
-                </SimpleGrid>
-
-                <Box w="full">
-                  <Text mb={2} fontWeight="medium" color="gray.700">
-                    Ubicación de la casa *
-                  </Text>
-                  <Input
-                    placeholder="Ej: Punta del Este, Piriápolis"
-                    value={formData.location}
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Nombre completo */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Nombre completo *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.fullName}
                     onChange={(e) =>
-                      setFormData({ ...formData, location: e.target.value })
+                      setFormData({ ...formData, fullName: e.target.value })
                     }
                     required
-                    size="lg"
-                    borderColor="gray.300"
-                    _hover={{ borderColor: "primary.500" }}
-                    _focus={{
-                      borderColor: "primary.600",
-                      boxShadow: "0 0 0 1px primary.600",
-                    }}
+                    placeholder="Tu nombre completo"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
                   />
-                </Box>
+                </div>
 
-                <Box w="full">
-                  <Text mb={2} fontWeight="medium" color="gray.700">
-                    Mensaje *
-                  </Text>
-                  <Textarea
-                    placeholder="Cuéntanos sobre tu propiedad y qué te gustaría saber..."
+                {/* Email y Phone en la misma fila */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                      required
+                      placeholder="tu@email.com"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                    />
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Teléfono *
+                    </label>
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) =>
+                        setFormData({ ...formData, phone: e.target.value })
+                      }
+                      required
+                      placeholder="+598 99 123 456"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* Message (optional) */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Mensaje adicional (opcional)
+                  </label>
+                  <textarea
                     value={formData.message}
                     onChange={(e) =>
                       setFormData({ ...formData, message: e.target.value })
                     }
-                    rows={4}
-                    required
-                    size="lg"
-                    borderColor="gray.300"
-                    _hover={{ borderColor: "primary.500" }}
-                    _focus={{
-                      borderColor: "primary.600",
-                      boxShadow: "0 0 0 1px primary.600",
-                    }}
+                    rows={3}
+                    placeholder="Cuéntanos sobre tu propiedad y qué te gustaría saber..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none"
                   />
-                </Box>
+                </div>
 
-                <Button
+                {/* Submit Button */}
+                <button
                   type="submit"
-                  size="lg"
-                  w="full"
-                  bg="primary.600"
-                  color="white"
-                  py={6}
-                  fontSize="lg"
-                  fontWeight="semibold"
-                  _hover={{
-                    transform: "translateY(-2px)",
-                    boxShadow: "xl",
-                    bg: "primary.700",
-                  }}
-                  transition="all 0.2s"
+                  disabled={isSubmitting}
+                  className="w-full bg-accent text-beige py-3 px-6 rounded-lg font-semibold hover:bg-accent/90 transition-all hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
-                  Enviar consulta
-                </Button>
+                  {isSubmitting ? "Enviando..." : "Enviar consulta →"}
+                </button>
 
-                <Text fontSize="sm" color="gray.500" textAlign="center">
-                  Te responderemos a la brevedad
-                </Text>
-              </VStack>
-            </Box>
-          </Box>
-        </SimpleGrid>
-      </Container>
-    </Box>
+                <p className="text-sm text-gray-600 text-center mt-3">
+                  Te responderemos en menos de 24 horas
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+    </div>
   );
 }
